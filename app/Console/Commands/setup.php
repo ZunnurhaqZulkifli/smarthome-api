@@ -11,7 +11,7 @@ class setup extends Command
      *
      * @var string
      */
-    protected $signature = 'app:setup';
+    protected $signature = 'app:start';
 
     /**
      * The console command description.
@@ -20,11 +20,33 @@ class setup extends Command
      */
     protected $description = 'Command description';
 
-    /**
-     * Execute the console command.
-     */
+    protected function rCommand($command)
+    {
+        $process = proc_open($command, [
+            1 => ['pipe', 'w'], // stdout
+            2 => ['pipe', 'w'], // stderr
+        ], $pipes);
+
+        if (is_resource($process)) {
+            while ($line = fgets($pipes[1])) {
+                $this->warn($line);
+            }
+
+            while ($line = fgets($pipes[2])) {
+                $this->error($line);
+            }
+
+            fclose($pipes[1]);
+            fclose($pipes[2]);
+
+            return proc_close($process);
+        }
+
+        return 1;
+    }
+
     public function handle()
     {
-        //
+        $this->rCommand('ngrok http http://127.0.0.1:8080');
     }
 }

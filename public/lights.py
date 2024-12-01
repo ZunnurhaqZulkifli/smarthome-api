@@ -21,6 +21,7 @@ def init():
     os.chdir('development/laravel/not_work/pmx-backup')
 
     current_dir = os.getcwd()
+    
 
     print("Current directory:", current_dir)
 
