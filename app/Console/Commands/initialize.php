@@ -56,7 +56,8 @@ class initialize extends Command
         $progress = $this->output->createProgressBar(100);
         $this->info(' ');
 
-        $this->rCOmmand('git stash');
+        $this->rCommand('git add .');
+        $this->rCommand('git stash');
         
         $this->info('Starting the application setup process...');
         $this->warn('Signed by: ' . '~z.z~');
