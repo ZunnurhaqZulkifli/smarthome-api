@@ -2,28 +2,45 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Models\Light;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Artisan;
 
 class LightsControllerApi extends BaseApiController
 {
-    public static function checkStatus(Request $request)
+    public function checkStatus(Request $request)
     {
-        $e = Artisan::call('app:light on');
-        return $e;
-    }
+        $light = Light::orderBy('id', 'desc')->first();
+        $status = $light->status;
 
-    public static function turnOn(Request $request)
-    {
-        return self::success([
-            'status' => 'on'
+        return $this->set_success([
+            'status' => $status
         ]);
     }
 
-    public static function turnOff(Request $request)
+    public function turnOn(Request $request)
     {
-        return self::success([
+        Light::create([
             'status' => 'on'
+        ]);
+
+        $message = Artisan::call('app:light on');
+
+        return $this->set_success([
+            'status' => 'on',
+        ]);
+    }
+
+    public function turnOff(Request $request)
+    {
+        Light::create([
+            'status' => 'off'
+        ]);
+
+        Artisan::call('app:light off');
+
+        return $this->set_success([
+            'status' => 'off',
         ]);
     }
 }

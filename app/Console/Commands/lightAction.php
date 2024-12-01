@@ -4,7 +4,7 @@ namespace App\Console\Commands;
 
 use Illuminate\Console\Command;
 
-class light extends Command
+class lightAction extends Command
 {
     /**
      * The name and signature of the console command.
@@ -24,7 +24,7 @@ class light extends Command
      * Execute the console command.
      */
 
-    protected function command($command)
+    protected function rCommand($command)
     {
         $process = proc_open($command, [
             1 => ['pipe', 'w'], // stdout
@@ -52,14 +52,18 @@ class light extends Command
     public function handle()
     {
         if($this->argument('status') === 'on') {
+            $this->info('Turning on the lights...');
+            $this->rCommand('cd ~/Development/smarthome-api/public && python3 lightsOn.py');
 
-            $this->command('python3');
-
-            $this->info('Turning on the light...');
+            return 'The lights is on';
         } else if($this->argument('status') === 'off') {
-            $this->info('Turning off the light...');
+            $this->info('Turning off the lights...');
+            $this->rCommand('cd ~/Development/smarthome-api/public && python3 lightsOff.py');
+
+            return 'The lights is off';
         } else {
             $this->error('Invalid status');
+            return 'The lights is unknown';
         }
     }
 }
